@@ -7,117 +7,81 @@
 <title>Wally's Rijksmuseum Treasure Hunt</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  :root {
-    --gold: #f4b942;
-    --gold-deep: #d99411;
-    --navy: #1d3b6e;
-    --navy-deep: #142a52;
-    --cream: #fff7e6;
-    --green: #46b06a;
-  }
-  html, body { margin: 0; padding: 0; }
+  :root { --gold:#f4b942; --gold-deep:#d99411; --navy:#1d3b6e; --navy-deep:#142a52; --cream:#fff7e6; --green:#46b06a; }
+  html, body { margin:0; padding:0; }
   body {
-    font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #2a4f8f 0%, var(--navy) 40%, var(--navy-deep) 100%);
-    background-attachment: fixed;
-    color: #fff;
-    min-height: 100vh;
-    padding: 0 14px 60px;
-    overflow-x: hidden;
+    font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;
+    background:radial-gradient(circle at 50% 0%, #3461b5 0%, var(--navy) 42%, var(--navy-deep) 100%);
+    background-attachment:fixed; color:#fff; min-height:100vh; padding:0 14px 70px; overflow-x:hidden;
   }
 
-  /* ---- Header ---- */
-  header { text-align: center; padding: 22px 6px 8px; }
-  .badge-spy { font-size: 46px; line-height: 1; filter: drop-shadow(0 4px 6px rgba(0,0,0,.4)); }
-  h1 {
-    font-size: 27px; margin: 6px 0 2px; letter-spacing: .5px;
-    color: var(--gold); text-shadow: 0 3px 0 var(--gold-deep), 0 5px 8px rgba(0,0,0,.4);
-  }
-  .subtitle { font-size: 14px; opacity: .85; margin: 0 0 14px; font-weight: bold; }
+  header { text-align:center; padding:20px 6px 6px; }
+  .badge-spy { font-size:50px; line-height:1; filter:drop-shadow(0 4px 6px rgba(0,0,0,.4)); animation:bob 2.5s ease-in-out infinite; display:inline-block; }
+  @keyframes bob { 0%,100%{transform:translateY(0) rotate(-4deg);} 50%{transform:translateY(-8px) rotate(4deg);} }
+  h1 { font-size:28px; margin:6px 0 2px; letter-spacing:.5px; color:var(--gold); text-shadow:0 3px 0 var(--gold-deep), 0 6px 10px rgba(0,0,0,.4); }
+  .subtitle { font-size:14px; opacity:.9; margin:0 0 14px; font-weight:bold; }
 
-  /* ---- Progress ---- */
-  .progress-wrap {
-    background: rgba(0,0,0,.25); border-radius: 20px; padding: 12px 16px;
-    max-width: 520px; margin: 0 auto 6px; border: 2px solid rgba(244,185,66,.4);
-  }
-  .progress-label { font-size: 14px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-  .stars { font-size: 20px; letter-spacing: 1px; margin-top: 6px; line-height: 1.3; word-break: break-all; }
-  .bar { height: 14px; background: rgba(255,255,255,.15); border-radius: 10px; margin-top: 8px; overflow: hidden; }
-  .bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), #ffe08a); border-radius: 10px; transition: width .5s ease; }
+  .progress-wrap { background:rgba(0,0,0,.28); border-radius:22px; padding:13px 16px; max-width:540px; margin:0 auto; border:3px solid rgba(244,185,66,.5); }
+  .progress-label { font-size:15px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; }
+  #count { background:var(--gold); color:var(--navy); padding:3px 12px; border-radius:14px; font-size:16px; }
+  .stars { font-size:21px; letter-spacing:2px; margin-top:8px; line-height:1.3; }
+  .bar { height:16px; background:rgba(255,255,255,.18); border-radius:10px; margin-top:8px; overflow:hidden; }
+  .bar-fill { height:100%; width:0%; background:linear-gradient(90deg,#ff7eb3,#ffd86b,#7ee8a0,#6bd0ff); background-size:300% 100%; border-radius:10px; transition:width .55s cubic-bezier(.3,1.4,.5,1); animation:shine 3s linear infinite; }
+  @keyframes shine { to { background-position:300% 0; } }
 
-  /* ---- Cards ---- */
-  .cards { max-width: 520px; margin: 18px auto 0; display: flex; flex-direction: column; gap: 16px; }
-  .card {
-    background: var(--cream); color: #2a2a2a; border-radius: 24px; padding: 16px 16px 18px;
-    box-shadow: 0 8px 0 rgba(0,0,0,.25), 0 14px 22px rgba(0,0,0,.35);
-    position: relative; transition: transform .15s ease;
-    border: 4px solid #fff;
-  }
-  .card:active { transform: scale(.985); }
-  .card.done { background: linear-gradient(160deg, #fff6d6, #ffe9a8); border-color: var(--gold); }
-  .card.done::after {
-    content: "✓"; position: absolute; top: -14px; right: -10px;
-    background: var(--green); color: #fff; width: 44px; height: 44px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0,0,0,.3); border: 3px solid #fff;
-  }
+  .cards { max-width:540px; margin:18px auto 0; display:flex; flex-direction:column; gap:18px; }
+  .card { background:var(--cream); color:#2a2a2a; border-radius:26px; padding:0 0 16px; overflow:hidden;
+    box-shadow:0 8px 0 rgba(0,0,0,.22), 0 16px 26px rgba(0,0,0,.38); border:5px solid #fff; position:relative; transition:transform .15s; }
+  .card.done { border-color:var(--gold); }
+  .card.done::after { content:"✓"; position:absolute; top:10px; right:10px; background:var(--green); color:#fff;
+    width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:28px; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,.4); border:3px solid #fff; z-index:3; animation:pop .4s ease; }
 
-  .card-top { display: flex; align-items: center; gap: 14px; }
-  .emoji { font-size: 52px; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 3px 3px rgba(0,0,0,.2)); }
-  .card-head { flex: 1; min-width: 0; }
-  .stop-name { font-size: 19px; font-weight: bold; line-height: 1.15; color: var(--navy); }
-  .gallery { font-size: 12px; color: #7a6a3a; font-weight: bold; margin-top: 3px; text-transform: uppercase; letter-spacing: .5px; }
+  .art { position:relative; height:180px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; }
+  .art-emoji { font-size:92px; filter:drop-shadow(0 4px 6px rgba(0,0,0,.3)); transition:transform .2s; }
+  .art:active .art-emoji { transform:scale(1.25) rotate(8deg); }
+  .art-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .art-tap { position:absolute; bottom:8px; right:10px; background:rgba(0,0,0,.55); color:#fff; font-size:11px;
+    font-weight:bold; padding:4px 10px; border-radius:20px; z-index:2; letter-spacing:.5px; }
+  .hero-flag { position:absolute; top:10px; left:10px; background:var(--gold); color:var(--navy); font-size:12px;
+    font-weight:bold; padding:5px 13px; border-radius:20px; letter-spacing:1px; box-shadow:0 3px 7px rgba(0,0,0,.4); z-index:3; }
 
-  .numbox {
-    margin: 14px 0 12px; display: flex; align-items: center; gap: 12px;
-    background: var(--navy); color: #fff; border-radius: 16px; padding: 10px 14px;
-  }
-  .numbox .label { font-size: 12px; opacity: .8; line-height: 1.2; }
-  .numbox .num { font-size: 38px; font-weight: bold; color: var(--gold); letter-spacing: 1px; margin-left: auto; }
-  .numbox.walk { background: #6a5a8a; }
-  .numbox.walk .num { font-size: 18px; color: #ffe08a; line-height: 1.1; text-align: right; }
+  .body { padding:0 16px; }
+  .stop-name { font-size:21px; font-weight:bold; line-height:1.15; color:var(--navy); margin-top:13px; }
+  .gallery { font-size:12px; color:#8a7333; font-weight:bold; margin-top:3px; text-transform:uppercase; letter-spacing:.5px; }
 
-  .mission {
-    background: #fff; border: 2px dashed var(--gold-deep); border-radius: 14px;
-    padding: 10px 14px; font-size: 16px; line-height: 1.35; font-weight: bold; color: #3a3a3a;
-  }
-  .mission .tag { color: var(--gold-deep); display: block; font-size: 12px; letter-spacing: 1px; margin-bottom: 2px; }
+  .numbox { margin:13px 0 12px; display:flex; align-items:center; gap:12px; background:var(--navy); color:#fff; border-radius:18px; padding:11px 16px; }
+  .numbox .label { font-size:12px; opacity:.85; line-height:1.2; }
+  .numbox .num { font-size:42px; font-weight:bold; color:var(--gold); letter-spacing:1px; margin-left:auto; text-shadow:0 2px 0 var(--gold-deep); }
+  .numbox.walk { background:#7a5fa8; }
+  .numbox.walk .num { font-size:17px; color:#ffe08a; line-height:1.1; text-align:right; }
 
-  .found-btn {
-    margin-top: 12px; width: 100%; border: none; border-radius: 16px; padding: 15px;
-    font-size: 18px; font-weight: bold; font-family: inherit; cursor: pointer;
-    background: var(--green); color: #fff; box-shadow: 0 5px 0 #2f8a4d; transition: all .1s;
-  }
-  .found-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #2f8a4d; }
-  .card.done .found-btn { background: var(--gold); color: var(--navy); box-shadow: 0 5px 0 var(--gold-deep); }
+  .mission { background:#fff; border:3px dashed var(--gold-deep); border-radius:16px; padding:11px 14px; font-size:16px; line-height:1.35; font-weight:bold; color:#3a3a3a; }
+  .mission .tag { color:var(--gold-deep); display:block; font-size:12px; letter-spacing:1px; margin-bottom:3px; }
 
-  /* The big star stop */
-  .card.hero { border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold), 0 8px 0 rgba(0,0,0,.25), 0 14px 26px rgba(0,0,0,.45); }
-  .card.hero .stop-name::before { content: "⭐ "; }
-  .hero-flag { position: absolute; top: -13px; left: 14px; background: var(--gold); color: var(--navy);
-    font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 3px 6px rgba(0,0,0,.3); }
+  .btn-row { display:flex; gap:10px; margin-top:13px; }
+  .found-btn { flex:1; border:none; border-radius:18px; padding:16px; font-size:18px; font-weight:bold; font-family:inherit;
+    cursor:pointer; background:var(--green); color:#fff; box-shadow:0 6px 0 #2f8a4d; transition:all .1s; }
+  .found-btn:active { transform:translateY(5px); box-shadow:0 1px 0 #2f8a4d; }
+  .card.done .found-btn { background:var(--gold); color:var(--navy); box-shadow:0 6px 0 var(--gold-deep); }
+  .fun-btn { width:64px; border:none; border-radius:18px; font-size:26px; cursor:pointer; background:#ff6fa5; color:#fff; box-shadow:0 6px 0 #d44e83; transition:all .1s; }
+  .fun-btn:active { transform:translateY(5px); box-shadow:0 1px 0 #d44e83; }
 
-  /* ---- Win screen ---- */
-  .win {
-    position: fixed; inset: 0; background: rgba(20,42,82,.97); z-index: 50;
-    display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px;
-  }
-  .win.show { display: flex; animation: pop .4s ease; }
-  .win h2 { font-size: 34px; color: var(--gold); margin: 10px 0; text-shadow: 0 3px 0 var(--gold-deep); }
-  .win p { font-size: 19px; line-height: 1.4; max-width: 360px; }
-  .win .big { font-size: 80px; margin-bottom: 6px; }
-  .win button { margin-top: 22px; background: var(--gold); color: var(--navy); border: none; border-radius: 16px;
-    padding: 14px 28px; font-size: 17px; font-weight: bold; font-family: inherit; box-shadow: 0 5px 0 var(--gold-deep); }
-  @keyframes pop { 0% { transform: scale(.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .win { position:fixed; inset:0; background:rgba(20,42,82,.97); z-index:50; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:30px; }
+  .win.show { display:flex; animation:pop .4s ease; }
+  .win h2 { font-size:36px; color:var(--gold); margin:10px 0; text-shadow:0 3px 0 var(--gold-deep); }
+  .win p { font-size:20px; line-height:1.4; max-width:360px; }
+  .win .big { font-size:88px; margin-bottom:6px; animation:bob 2s ease-in-out infinite; }
+  .win button { margin-top:22px; background:var(--gold); color:var(--navy); border:none; border-radius:18px; padding:16px 32px; font-size:18px; font-weight:bold; font-family:inherit; box-shadow:0 6px 0 var(--gold-deep); }
+  @keyframes pop { 0%{transform:scale(.6);opacity:0;} 100%{transform:scale(1);opacity:1;} }
 
-  /* ---- Footer ---- */
-  footer { text-align: center; max-width: 520px; margin: 26px auto 0; font-size: 13px; opacity: .7; line-height: 1.5; }
-  .reset { background: none; border: 1px solid rgba(255,255,255,.4); color: #fff; border-radius: 12px;
-    padding: 8px 16px; font-size: 13px; font-family: inherit; margin-top: 12px; cursor: pointer; }
+  footer { text-align:center; max-width:540px; margin:26px auto 0; font-size:13px; opacity:.75; line-height:1.5; }
+  .reset { background:none; border:1px solid rgba(255,255,255,.4); color:#fff; border-radius:12px; padding:9px 18px; font-size:13px; font-family:inherit; margin-top:12px; cursor:pointer; }
 
-  /* ---- Confetti ---- */
-  .confetti { position: fixed; top: -40px; font-size: 26px; z-index: 60; pointer-events: none; will-change: transform; }
-  @keyframes fall { to { transform: translateY(110vh) rotate(540deg); opacity: 0; } }
+  .fx { position:fixed; z-index:60; pointer-events:none; will-change:transform; font-size:24px; }
+  @keyframes spark { to { transform:translate(var(--dx), var(--dy)) scale(.4); opacity:0; } }
+  @keyframes floatup { to { transform:translateY(-115vh) translateX(var(--sway)); opacity:0; } }
 </style>
 </head>
 <body>
@@ -125,7 +89,7 @@
 <header>
   <div class="badge-spy">🕵️</div>
   <h1>Wally's Treasure Hunt</h1>
-  <p class="subtitle">Secret Agent Mission · Rijksmuseum</p>
+  <p class="subtitle">🎨 Secret Agent Mission · Rijksmuseum</p>
   <div class="progress-wrap">
     <div class="progress-label"><span>🏆 Agent Points</span><span id="count">0 / 11</span></div>
     <div class="bar"><div class="bar-fill" id="barfill"></div></div>
@@ -136,107 +100,129 @@
 <div class="cards" id="cards"></div>
 
 <footer>
-  How to play: at each painting, type the big number into the official Rijksmuseum app to hear the story —
-  then find the secret thing and tap <b>I FOUND IT!</b> 🎨<br>
+  At each painting: type the big number into the official Rijksmuseum app 🎧, find the secret thing,
+  then smash <b>I FOUND IT!</b> 🎆 Tap the picture for balloons! 🎈<br>
   <button class="reset" onclick="resetAll()">↻ Start over</button>
 </footer>
 
 <div class="win" id="win">
   <div class="big">🥞🎉</div>
   <h2>MISSION COMPLETE!</h2>
-  <p>Super job, Agent Wally! You found every secret treasure in the whole museum. Time for poffertjes!</p>
-  <button onclick="document.getElementById('win').classList.remove('show')">Yay! ⭐</button>
+  <p>Super job, Agent Wally! You found every treasure in the whole museum. Time for poffertjes!</p>
+  <button onclick="hideWin()">Yay! ⭐</button>
 </div>
 
 <script>
 const STOPS = [
-  { id:1,  emoji:"🏛️", name:"The Great Hall",        gallery:"Entrance hall",        num:"949", mission:"Look WAY up! Is this a castle or a church? Count the big arches." },
-  { id:2,  emoji:"🧀", name:"The Cheese Painting",    gallery:"Gallery of Honour",    num:"589", mission:"FIND THE CHEESE! How many cheeses are on the table? Which food would you eat first?" },
-  { id:3,  emoji:"🥛", name:"The Milkmaid",           gallery:"Gallery of Honour",    num:"575", mission:"Find the little foot-warmer box on the floor. Is the milk moving or frozen?" },
-  { id:4,  emoji:"🌬️", name:"The Windmill",           gallery:"Gallery of Honour",    num:"519", mission:"A windmill — just like the real one we saw! Find the dark rain clouds." },
-  { id:5,  emoji:"🦢", name:"The Angry Swan",         gallery:"Gallery of Honour",    num:"549", mission:"A giant white swan with its wings WAY open. Make the angry hiss! Ssssss!" },
-  { id:6,  emoji:"🌟", name:"The Night Watch",        gallery:"Night Watch Gallery",  num:"500", mission:"The most famous painting in Holland! Find: the little GIRL IN GOLD, the DOG, and the DRUMMER drumming.", hero:true },
-  { id:7,  emoji:"⛵", name:"The Giant Ship",         gallery:"Gallery 2.15",         num:"515", mission:"A huge wooden warship! Count the tall masts. How many sails could it have?" },
-  { id:8,  emoji:"🏠", name:"The Tiny Doll's House",  gallery:"17th-century rooms",   num:"WALK", mission:"The tiniest house in the world! Find the little kitchen and the teeny tiny plates." },
-  { id:9,  emoji:"🧑‍🎨", name:"Van Gogh's Face",       gallery:"Gallery 1.18",         num:"325", mission:"A man with an ORANGE beard who painted his own face! Count how many colors are in his cheeks." },
-  { id:10, emoji:"🕺", name:"The Dancing God",        gallery:"Asian Pavilion",       num:"819", mission:"A golden god dancing in a ring of fire! COUNT HIS ARMS. (Four!) What's under his foot?" },
-  { id:11, emoji:"👹", name:"The Temple Guards",      gallery:"Asian Pavilion",       num:"873", mission:"Two giant scary warrior statues guarding a door. Make YOUR scariest guard face!" },
+  { id:1,  emoji:"🏛️", grad:"#3461b5,#7aa0e0", name:"The Great Hall",       gallery:"Entrance hall",       num:"949", mission:"Look WAY up! Is this a castle or a church? Count the big arches." },
+  { id:2,  emoji:"🧀", grad:"#f0932b,#ffd56b", name:"The Cheese Painting",   gallery:"Gallery of Honour",   num:"589", mission:"FIND THE CHEESE! How many cheeses on the table? Which food would you eat first?" },
+  { id:3,  emoji:"🥛", grad:"#16a596,#7fe0d4", name:"The Milkmaid",          gallery:"Gallery of Honour",   num:"575", img:"Johannes%20Vermeer%20-%20Het%20melkmeisje%20-%20Google%20Art%20Project.jpg", mission:"Find the little foot-warmer box on the floor. Is the milk moving or frozen?" },
+  { id:4,  emoji:"🌬️", grad:"#3ba7e0,#8fe09a", name:"The Windmill",          gallery:"Gallery of Honour",   num:"519", mission:"A windmill — like the real one we saw! Find the dark rain clouds in the sky." },
+  { id:5,  emoji:"🦢", grad:"#2bb6d6,#bff0ff", name:"The Angry Swan",        gallery:"Gallery of Honour",   num:"549", img:"Jan%20Asselijn%20-%20The%20Threatened%20Swan.jpg", mission:"A giant white swan with wings WAY open. Make the angry hiss! Ssssss!" },
+  { id:6,  emoji:"🌟", grad:"#b5862b,#f4d06b", name:"The Night Watch",       gallery:"Night Watch Gallery", num:"500", img:"The%20Nightwatch%20by%20Rembrandt%20-%20Rijksmuseum.jpg", hero:true, mission:"The most famous painting in Holland! Find: the little GIRL IN GOLD, the DOG, and the DRUMMER." },
+  { id:7,  emoji:"⛵", grad:"#1d3b6e,#5f9fd6", name:"The Giant Ship",        gallery:"Gallery 2.15",        num:"515", mission:"A HUGE wooden warship! Count the tall masts. How many sails could it have?" },
+  { id:8,  emoji:"🏠", grad:"#d6519e,#ffa6d6", name:"The Tiny Doll's House", gallery:"17th-century rooms",  num:"WALK", mission:"The tiniest house in the world! Find the little kitchen and the teeny tiny plates." },
+  { id:9,  emoji:"🧑‍🎨", grad:"#e0682b,#3bbac4", name:"Van Gogh's Face",      gallery:"Gallery 1.18",        num:"325", img:"Vincent%20van%20Gogh%20-%20Self-Portrait%20-%20Google%20Art%20Project%20(454045).jpg", mission:"A man with an ORANGE beard who painted his OWN face! Count the colors in his cheeks." },
+  { id:10, emoji:"🕺", grad:"#c0398a,#f4c04b", name:"The Dancing God",       gallery:"Asian Pavilion",      num:"819", imgfull:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Shiva_as_the_Lord_of_Dance_LACMA_edit.jpg/440px-Shiva_as_the_Lord_of_Dance_LACMA_edit.jpg", mission:"A golden god dancing in a ring of fire! COUNT HIS ARMS (four!). What's under his foot?" },
+  { id:11, emoji:"👹", grad:"#c0392b,#5a1a14", name:"The Temple Guards",     gallery:"Asian Pavilion",      num:"873", mission:"Two giant scary warrior statues guarding a door. Make YOUR scariest guard face!" },
 ];
-
-const TOTAL = STOPS.length;
-const KEY = "wally-rijks-v1";
+const TOTAL = STOPS.length, KEY = "wally-rijks-v2";
 let done = JSON.parse(localStorage.getItem(KEY) || "{}");
 
+function buzz(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
+
+function imgSrc(s){
+  if (s.imgfull) return s.imgfull;
+  if (s.img) return "https://commons.wikimedia.org/wiki/Special:FilePath/" + s.img + "?width=520";
+  return null;
+}
+
 function render() {
-  const c = document.getElementById("cards");
-  c.innerHTML = "";
+  const c = document.getElementById("cards"); c.innerHTML = "";
   STOPS.forEach(s => {
-    const isDone = !!done[s.id];
+    const isDone = !!done[s.id], walk = s.num === "WALK", src = imgSrc(s);
     const card = document.createElement("div");
-    card.className = "card" + (isDone ? " done" : "") + (s.hero ? " hero" : "");
-    const walk = s.num === "WALK";
+    card.className = "card" + (isDone ? " done" : "");
     card.innerHTML = `
-      ${s.hero ? '<div class="hero-flag">BIGGEST PRIZE</div>' : ''}
-      <div class="card-top">
-        <div class="emoji">${s.emoji}</div>
-        <div class="card-head">
-          <div class="stop-name">${s.name}</div>
-          <div class="gallery">${s.gallery}</div>
+      <div class="art" style="background:linear-gradient(150deg,${s.grad})" onclick="balloons(event)">
+        ${s.hero ? '<div class="hero-flag">⭐ BIGGEST PRIZE</div>' : ''}
+        <span class="art-emoji">${s.emoji}</span>
+        ${src ? `<img class="art-img" src="${src}" alt="" onerror="this.remove()">` : ''}
+        <div class="art-tap">👆 tap me!</div>
+      </div>
+      <div class="body">
+        <div class="stop-name">${s.name}</div>
+        <div class="gallery">${s.gallery}</div>
+        <div class="numbox${walk ? ' walk' : ''}">
+          <div class="label">${walk ? 'No number —' : 'Type into the app 🎧'}</div>
+          <div class="num">${walk ? 'just walk<br>&amp; find it!' : s.num}</div>
         </div>
-      </div>
-      <div class="numbox${walk ? ' walk' : ''}">
-        <div class="label">${walk ? 'No number —' : 'Type into the app'}</div>
-        <div class="num">${walk ? 'just walk<br>and find it!' : s.num}</div>
-      </div>
-      <div class="mission"><span class="tag">🔎 YOUR MISSION</span>${s.mission}</div>
-      <button class="found-btn" onclick="toggle(${s.id}, this)">${isDone ? '⭐ Found it! Tap to undo' : 'I FOUND IT! ⭐'}</button>
-    `;
+        <div class="mission"><span class="tag">🔎 YOUR MISSION</span>${s.mission}</div>
+        <div class="btn-row">
+          <button class="found-btn" onclick="toggle(${s.id},event)">${isDone ? '⭐ Found it!' : 'I FOUND IT! 🎆'}</button>
+          <button class="fun-btn" onclick="balloons(event)" title="balloons">🎈</button>
+        </div>
+      </div>`;
     c.appendChild(card);
   });
   updateProgress();
 }
 
-function toggle(id, btn) {
-  if (done[id]) { delete done[id]; }
-  else { done[id] = true; burst(btn); }
+function toggle(id, ev) {
+  if (done[id]) { delete done[id]; buzz(20); }
+  else { done[id] = true; buzz([0,40,30,60]); fireworks(ev); }
   localStorage.setItem(KEY, JSON.stringify(done));
   render();
-  if (Object.keys(done).length === TOTAL) {
-    setTimeout(() => document.getElementById("win").classList.add("show"), 350);
-  }
+  if (Object.keys(done).length === TOTAL) setTimeout(showWin, 400);
 }
 
 function updateProgress() {
   const n = Object.keys(done).length;
   document.getElementById("count").textContent = n + " / " + TOTAL;
   document.getElementById("barfill").style.width = (n / TOTAL * 100) + "%";
-  let s = "";
-  for (let i = 0; i < TOTAL; i++) s += i < n ? "⭐" : "☆";
+  let s = ""; for (let i=0;i<TOTAL;i++) s += i<n ? "⭐" : "☆";
   document.getElementById("stars").textContent = s;
 }
 
-function burst(btn) {
-  const emojis = ["⭐","🎉","✨","🏅","🎈","💛"];
-  const rect = btn ? btn.getBoundingClientRect() : { left: innerWidth/2, top: innerHeight/2, width:0 };
-  for (let i = 0; i < 18; i++) {
-    const e = document.createElement("div");
-    e.className = "confetti";
-    e.textContent = emojis[i % emojis.length];
-    e.style.left = (rect.left + Math.random() * rect.width) + "px";
-    e.style.top = (rect.top - 10) + "px";
-    const dur = 1.2 + Math.random() * 1.1;
-    e.style.animation = `fall ${dur}s ease-in forwards`;
-    e.style.setProperty("transform", `translateX(${(Math.random()-.5)*120}px)`);
-    document.body.appendChild(e);
-    setTimeout(() => e.remove(), dur * 1000 + 100);
+function spawn(x, y, txt, anim, dur, vars) {
+  const e = document.createElement("div");
+  e.className = "fx"; e.textContent = txt;
+  e.style.left = x + "px"; e.style.top = y + "px";
+  for (const k in vars) e.style.setProperty(k, vars[k]);
+  e.style.animation = anim + " " + dur + "s ease-out forwards";
+  document.body.appendChild(e);
+  setTimeout(() => e.remove(), dur * 1000 + 120);
+}
+
+function fireworks(ev) {
+  const x = ev ? ev.clientX : innerWidth/2, y = ev ? ev.clientY : innerHeight/2;
+  const bits = ["🎆","✨","⭐","🎉","💥","🌟","💛","🧨"];
+  for (let i=0;i<26;i++) {
+    const ang = (Math.PI*2*i)/26 + Math.random()*0.3, dist = 90 + Math.random()*150;
+    spawn(x, y, bits[i % bits.length], "spark", 0.9 + Math.random()*0.7,
+      { "--dx": Math.cos(ang)*dist + "px", "--dy": Math.sin(ang)*dist + "px" });
   }
 }
 
+function balloons(ev) {
+  if (ev) ev.stopPropagation();
+  buzz(30);
+  const set = ["🎈","🎈","🎈","🎉","🌈","💫","🩷","💙","💚"];
+  for (let i=0;i<14;i++) {
+    const x = Math.random()*innerWidth;
+    spawn(x, innerHeight + 20, set[i % set.length], "floatup", 2.2 + Math.random()*1.6,
+      { "--sway": (Math.random()-.5)*120 + "px", "font-size": (26 + Math.random()*22) + "px" });
+  }
+}
+
+function showWin(){ document.getElementById("win").classList.add("show"); buzz([0,60,40,60,40,80]); bigShow(); }
+function bigShow(){ for(let k=0;k<5;k++) setTimeout(()=>fireworks({clientX:Math.random()*innerWidth, clientY:Math.random()*innerHeight*0.6}), k*350); }
+function hideWin(){ document.getElementById("win").classList.remove("show"); }
+
 function resetAll() {
   if (!confirm("Start the treasure hunt over from the beginning?")) return;
-  done = {}; localStorage.removeItem(KEY);
-  document.getElementById("win").classList.remove("show");
-  render(); window.scrollTo({ top: 0, behavior: "smooth" });
+  done = {}; localStorage.removeItem(KEY); hideWin(); render();
+  window.scrollTo({ top:0, behavior:"smooth" });
 }
 
 render();
