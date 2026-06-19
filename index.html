@@ -106,8 +106,7 @@
 <div class="cards" id="cards"></div>
 
 <footer>
-  At each stop: type the big number into the official Rijksmuseum app 🎧, find the secret thing,
-  then SMASH the green button 🎆 Tap the picture for balloons! 🎈<br>
+  At each stop: find the secret thing in the painting, then SMASH the green button 🎆 Tap the picture for balloons! 🎈<br>
   <button class="reset" onclick="resetAll()">↻ Start over</button>
 </footer>
 
@@ -166,10 +165,6 @@ function render() {
       <div class="body">
         <div class="stop-name">${s.name}</div>
         <div class="gallery">${s.gallery}</div>
-        <div class="numbox${walk ? ' walk' : ''}">
-          <div class="label">${walk ? 'No number —' : 'Type into the app 🎧'}</div>
-          <div class="num">${walk ? 'just walk<br>&amp; find it!' : s.num}</div>
-        </div>
         <div class="mission"><span class="tag">🔎 YOUR MISSION</span>${s.mission}</div>
         <button class="found-btn" onclick="toggle(${id},event)">${isDone ? '⭐ FOUND IT!' : 'I FOUND IT! 🎆'}</button>
         <button class="fun-btn" onclick="balloons(event)">🎈 BALLOONS! 🎈</button>
