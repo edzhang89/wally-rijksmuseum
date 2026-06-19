@@ -12,7 +12,7 @@
   body {
     font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;
     background:radial-gradient(circle at 50% 0%, #3461b5 0%, var(--navy) 42%, var(--navy-deep) 100%);
-    background-attachment:fixed; color:#fff; min-height:100vh; padding:0 14px 80px; overflow-x:hidden;
+    background-attachment:fixed; color:#fff; min-height:100vh; padding:0 14px 165px; overflow-x:hidden;
   }
   header { text-align:center; padding:20px 6px 6px; }
   .badge-spy { font-size:54px; line-height:1; filter:drop-shadow(0 4px 6px rgba(0,0,0,.4)); animation:bob 2.5s ease-in-out infinite; display:inline-block; }
@@ -21,13 +21,16 @@
   .subtitle { font-size:14px; opacity:.9; margin:0 0 14px; font-weight:bold; }
 
   .progress-wrap { background:rgba(0,0,0,.28); border-radius:22px; padding:13px 16px; max-width:560px; margin:0 auto; border:3px solid rgba(244,185,66,.5); position:sticky; top:8px; z-index:8; backdrop-filter:blur(4px); }
-  .star-side { position:fixed; right:8px; top:50%; transform:translateY(-50%); z-index:30; background:linear-gradient(160deg,#f4d06b,#e0a82b); border:4px solid #fff; border-radius:22px; padding:10px 10px 8px; text-align:center; box-shadow:0 6px 18px rgba(0,0,0,.35); min-width:62px; }
-  .star-side-icon { font-size:30px; line-height:1; filter:drop-shadow(0 2px 0 rgba(0,0,0,.2)); }
-  .star-side-count { font-size:40px; font-weight:900; color:#3a2a05; line-height:1; margin-top:2px; }
-  .star-side-total { font-size:13px; font-weight:bold; color:#5a3f08; margin-top:1px; }
-  .star-side.pop { animation: starpop .55s ease-out; }
-  @keyframes starpop { 0%{transform:translateY(-50%) scale(1);} 35%{transform:translateY(-50%) scale(1.35) rotate(-7deg);} 100%{transform:translateY(-50%) scale(1) rotate(0);} }
-  @media (max-width:420px){ .star-side{ min-width:54px; padding:8px 8px 6px; right:6px; } .star-side-count{ font-size:34px; } .star-side-icon{ font-size:26px; } }
+  .hud { position:fixed; left:0; right:0; bottom:0; z-index:30; background:linear-gradient(0deg,rgba(20,42,82,.99),rgba(20,42,82,.93)); border-top:4px solid var(--gold); padding:8px 10px calc(9px + env(safe-area-inset-bottom)); box-shadow:0 -6px 22px rgba(0,0,0,.45); }
+  .hud-count { text-align:center; font-size:14px; font-weight:bold; color:var(--gold); margin-bottom:3px; }
+  .hud-stars { font-size:20px; letter-spacing:2px; text-align:center; line-height:1.3; word-break:break-all; margin-bottom:8px; max-width:560px; margin-left:auto; margin-right:auto; }
+  .hud-stars.pop { animation: hudpop .5s ease-out; }
+  @keyframes hudpop { 0%{transform:scale(1);} 40%{transform:scale(1.12);} 100%{transform:scale(1);} }
+  .hud-next { display:block; width:100%; max-width:560px; margin:0 auto; background:linear-gradient(160deg,#ffd86b,#f0a92b); color:#3a2a05; border:3px solid #fff; border-radius:18px; font-size:19px; font-weight:900; padding:13px; cursor:pointer; box-shadow:0 4px 0 #c8861a; font-family:inherit; }
+  .hud-next:active { transform:translateY(3px); box-shadow:0 1px 0 #c8861a; }
+  .hud-next.alldone { background:linear-gradient(160deg,#7ee8a0,#46b06a); color:#0a3a1c; box-shadow:0 4px 0 #2e7d49; }
+  .card.hl { animation: cardhl 1.1s ease; }
+  @keyframes cardhl { 0%,100%{box-shadow:0 9px 0 rgba(0,0,0,.22),0 18px 28px rgba(0,0,0,.38);} 30%,60%{box-shadow:0 0 0 5px var(--gold),0 0 26px 8px rgba(244,185,66,.85);} }
   .progress-label { font-size:15px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; }
   #count { background:var(--gold); color:var(--navy); padding:4px 14px; border-radius:14px; font-size:17px; }
   .stars { font-size:18px; letter-spacing:1px; margin-top:8px; line-height:1.3; word-break:break-all; }
@@ -99,12 +102,6 @@
 </head>
 <body>
 
-<div class="star-side" id="starSide" aria-label="stars earned">
-  <div class="star-side-icon">⭐</div>
-  <div class="star-side-count"><span id="sideNum">0</span></div>
-  <div class="star-side-total">of 21</div>
-</div>
-
 <header>
   <div class="badge-spy">🕵️</div>
   <h1>Wally's Treasure Hunt</h1>
@@ -122,6 +119,12 @@
   At each stop: find the secret thing in the painting, then SMASH the green button 🎆 Tap the picture for balloons! 🎈<br>
   <button class="reset" onclick="resetAll()">↻ Start over</button>
 </footer>
+
+<div class="hud" id="hud">
+  <div class="hud-count" id="hudCount">0 of 21 treasures found</div>
+  <div class="hud-stars" id="hudStars"></div>
+  <button class="hud-next" id="hudNext" onclick="findNext()">🔭 Find my next treasure!</button>
+</div>
 
 <div class="win" id="win">
   <div class="big">🥞🎉</div>
@@ -210,12 +213,25 @@ function updateProgress() {
   document.getElementById("barfill").style.width = (n / TOTAL * 100) + "%";
   let s = ""; for (let i=0;i<TOTAL;i++) s += i<n ? "⭐" : "☆";
   document.getElementById("stars").textContent = s;
-  const side = document.getElementById("starSide");
-  document.getElementById("sideNum").textContent = n;
+  const hudStars = document.getElementById("hudStars");
+  hudStars.textContent = s;
+  document.getElementById("hudCount").textContent = n + " of " + TOTAL + " treasures found";
+  const nextBtn = document.getElementById("hudNext");
+  if (n >= TOTAL) { nextBtn.textContent = "🎉 You found them ALL!"; nextBtn.classList.add("alldone"); }
+  else { nextBtn.textContent = "🔭 Find my next treasure!"; nextBtn.classList.remove("alldone"); }
   if (n !== lastN && lastN !== -1) {
-    side.classList.remove("pop"); void side.offsetWidth; side.classList.add("pop");
+    hudStars.classList.remove("pop"); void hudStars.offsetWidth; hudStars.classList.add("pop");
   }
   lastN = n;
+}
+
+function findNext() {
+  const idx = STOPS.findIndex((s, i) => !done[i + 1]);
+  buzz(15);
+  if (idx === -1) { showWin(); return; }
+  const el = document.getElementById("card" + (idx + 1));
+  el.scrollIntoView({ behavior:"smooth", block:"center" });
+  el.classList.remove("hl"); void el.offsetWidth; el.classList.add("hl");
 }
 
 function spawn(x, y, txt, anim, dur, vars) {
