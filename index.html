@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1d3b6e">
+<title>Wally's Rijksmuseum Treasure Hunt</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --gold: #f4b942;
+    --gold-deep: #d99411;
+    --navy: #1d3b6e;
+    --navy-deep: #142a52;
+    --cream: #fff7e6;
+    --green: #46b06a;
+  }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(circle at 50% 0%, #2a4f8f 0%, var(--navy) 40%, var(--navy-deep) 100%);
+    background-attachment: fixed;
+    color: #fff;
+    min-height: 100vh;
+    padding: 0 14px 60px;
+    overflow-x: hidden;
+  }
+
+  /* ---- Header ---- */
+  header { text-align: center; padding: 22px 6px 8px; }
+  .badge-spy { font-size: 46px; line-height: 1; filter: drop-shadow(0 4px 6px rgba(0,0,0,.4)); }
+  h1 {
+    font-size: 27px; margin: 6px 0 2px; letter-spacing: .5px;
+    color: var(--gold); text-shadow: 0 3px 0 var(--gold-deep), 0 5px 8px rgba(0,0,0,.4);
+  }
+  .subtitle { font-size: 14px; opacity: .85; margin: 0 0 14px; font-weight: bold; }
+
+  /* ---- Progress ---- */
+  .progress-wrap {
+    background: rgba(0,0,0,.25); border-radius: 20px; padding: 12px 16px;
+    max-width: 520px; margin: 0 auto 6px; border: 2px solid rgba(244,185,66,.4);
+  }
+  .progress-label { font-size: 14px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+  .stars { font-size: 20px; letter-spacing: 1px; margin-top: 6px; line-height: 1.3; word-break: break-all; }
+  .bar { height: 14px; background: rgba(255,255,255,.15); border-radius: 10px; margin-top: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), #ffe08a); border-radius: 10px; transition: width .5s ease; }
+
+  /* ---- Cards ---- */
+  .cards { max-width: 520px; margin: 18px auto 0; display: flex; flex-direction: column; gap: 16px; }
+  .card {
+    background: var(--cream); color: #2a2a2a; border-radius: 24px; padding: 16px 16px 18px;
+    box-shadow: 0 8px 0 rgba(0,0,0,.25), 0 14px 22px rgba(0,0,0,.35);
+    position: relative; transition: transform .15s ease;
+    border: 4px solid #fff;
+  }
+  .card:active { transform: scale(.985); }
+  .card.done { background: linear-gradient(160deg, #fff6d6, #ffe9a8); border-color: var(--gold); }
+  .card.done::after {
+    content: "✓"; position: absolute; top: -14px; right: -10px;
+    background: var(--green); color: #fff; width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,.3); border: 3px solid #fff;
+  }
+
+  .card-top { display: flex; align-items: center; gap: 14px; }
+  .emoji { font-size: 52px; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 3px 3px rgba(0,0,0,.2)); }
+  .card-head { flex: 1; min-width: 0; }
+  .stop-name { font-size: 19px; font-weight: bold; line-height: 1.15; color: var(--navy); }
+  .gallery { font-size: 12px; color: #7a6a3a; font-weight: bold; margin-top: 3px; text-transform: uppercase; letter-spacing: .5px; }
+
+  .numbox {
+    margin: 14px 0 12px; display: flex; align-items: center; gap: 12px;
+    background: var(--navy); color: #fff; border-radius: 16px; padding: 10px 14px;
+  }
+  .numbox .label { font-size: 12px; opacity: .8; line-height: 1.2; }
+  .numbox .num { font-size: 38px; font-weight: bold; color: var(--gold); letter-spacing: 1px; margin-left: auto; }
+  .numbox.walk { background: #6a5a8a; }
+  .numbox.walk .num { font-size: 18px; color: #ffe08a; line-height: 1.1; text-align: right; }
+
+  .mission {
+    background: #fff; border: 2px dashed var(--gold-deep); border-radius: 14px;
+    padding: 10px 14px; font-size: 16px; line-height: 1.35; font-weight: bold; color: #3a3a3a;
+  }
+  .mission .tag { color: var(--gold-deep); display: block; font-size: 12px; letter-spacing: 1px; margin-bottom: 2px; }
+
+  .found-btn {
+    margin-top: 12px; width: 100%; border: none; border-radius: 16px; padding: 15px;
+    font-size: 18px; font-weight: bold; font-family: inherit; cursor: pointer;
+    background: var(--green); color: #fff; box-shadow: 0 5px 0 #2f8a4d; transition: all .1s;
+  }
+  .found-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #2f8a4d; }
+  .card.done .found-btn { background: var(--gold); color: var(--navy); box-shadow: 0 5px 0 var(--gold-deep); }
+
+  /* The big star stop */
+  .card.hero { border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold), 0 8px 0 rgba(0,0,0,.25), 0 14px 26px rgba(0,0,0,.45); }
+  .card.hero .stop-name::before { content: "⭐ "; }
+  .hero-flag { position: absolute; top: -13px; left: 14px; background: var(--gold); color: var(--navy);
+    font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 3px 6px rgba(0,0,0,.3); }
+
+  /* ---- Win screen ---- */
+  .win {
+    position: fixed; inset: 0; background: rgba(20,42,82,.97); z-index: 50;
+    display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px;
+  }
+  .win.show { display: flex; animation: pop .4s ease; }
+  .win h2 { font-size: 34px; color: var(--gold); margin: 10px 0; text-shadow: 0 3px 0 var(--gold-deep); }
+  .win p { font-size: 19px; line-height: 1.4; max-width: 360px; }
+  .win .big { font-size: 80px; margin-bottom: 6px; }
+  .win button { margin-top: 22px; background: var(--gold); color: var(--navy); border: none; border-radius: 16px;
+    padding: 14px 28px; font-size: 17px; font-weight: bold; font-family: inherit; box-shadow: 0 5px 0 var(--gold-deep); }
+  @keyframes pop { 0% { transform: scale(.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+  /* ---- Footer ---- */
+  footer { text-align: center; max-width: 520px; margin: 26px auto 0; font-size: 13px; opacity: .7; line-height: 1.5; }
+  .reset { background: none; border: 1px solid rgba(255,255,255,.4); color: #fff; border-radius: 12px;
+    padding: 8px 16px; font-size: 13px; font-family: inherit; margin-top: 12px; cursor: pointer; }
+
+  /* ---- Confetti ---- */
+  .confetti { position: fixed; top: -40px; font-size: 26px; z-index: 60; pointer-events: none; will-change: transform; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(540deg); opacity: 0; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge-spy">🕵️</div>
+  <h1>Wally's Treasure Hunt</h1>
+  <p class="subtitle">Secret Agent Mission · Rijksmuseum</p>
+  <div class="progress-wrap">
+    <div class="progress-label"><span>🏆 Agent Points</span><span id="count">0 / 11</span></div>
+    <div class="bar"><div class="bar-fill" id="barfill"></div></div>
+    <div class="stars" id="stars"></div>
+  </div>
+</header>
+
+<div class="cards" id="cards"></div>
+
+<footer>
+  How to play: at each painting, type the big number into the official Rijksmuseum app to hear the story —
+  then find the secret thing and tap <b>I FOUND IT!</b> 🎨<br>
+  <button class="reset" onclick="resetAll()">↻ Start over</button>
+</footer>
+
+<div class="win" id="win">
+  <div class="big">🥞🎉</div>
+  <h2>MISSION COMPLETE!</h2>
+  <p>Super job, Agent Wally! You found every secret treasure in the whole museum. Time for poffertjes!</p>
+  <button onclick="document.getElementById('win').classList.remove('show')">Yay! ⭐</button>
+</div>
+
+<script>
+const STOPS = [
+  { id:1,  emoji:"🏛️", name:"The Great Hall",        gallery:"Entrance hall",        num:"949", mission:"Look WAY up! Is this a castle or a church? Count the big arches." },
+  { id:2,  emoji:"🧀", name:"The Cheese Painting",    gallery:"Gallery of Honour",    num:"589", mission:"FIND THE CHEESE! How many cheeses are on the table? Which food would you eat first?" },
+  { id:3,  emoji:"🥛", name:"The Milkmaid",           gallery:"Gallery of Honour",    num:"575", mission:"Find the little foot-warmer box on the floor. Is the milk moving or frozen?" },
+  { id:4,  emoji:"🌬️", name:"The Windmill",           gallery:"Gallery of Honour",    num:"519", mission:"A windmill — just like the real one we saw! Find the dark rain clouds." },
+  { id:5,  emoji:"🦢", name:"The Angry Swan",         gallery:"Gallery of Honour",    num:"549", mission:"A giant white swan with its wings WAY open. Make the angry hiss! Ssssss!" },
+  { id:6,  emoji:"🌟", name:"The Night Watch",        gallery:"Night Watch Gallery",  num:"500", mission:"The most famous painting in Holland! Find: the little GIRL IN GOLD, the DOG, and the DRUMMER drumming.", hero:true },
+  { id:7,  emoji:"⛵", name:"The Giant Ship",         gallery:"Gallery 2.15",         num:"515", mission:"A huge wooden warship! Count the tall masts. How many sails could it have?" },
+  { id:8,  emoji:"🏠", name:"The Tiny Doll's House",  gallery:"17th-century rooms",   num:"WALK", mission:"The tiniest house in the world! Find the little kitchen and the teeny tiny plates." },
+  { id:9,  emoji:"🧑‍🎨", name:"Van Gogh's Face",       gallery:"Gallery 1.18",         num:"325", mission:"A man with an ORANGE beard who painted his own face! Count how many colors are in his cheeks." },
+  { id:10, emoji:"🕺", name:"The Dancing God",        gallery:"Asian Pavilion",       num:"819", mission:"A golden god dancing in a ring of fire! COUNT HIS ARMS. (Four!) What's under his foot?" },
+  { id:11, emoji:"👹", name:"The Temple Guards",      gallery:"Asian Pavilion",       num:"873", mission:"Two giant scary warrior statues guarding a door. Make YOUR scariest guard face!" },
+];
+
+const TOTAL = STOPS.length;
+const KEY = "wally-rijks-v1";
+let done = JSON.parse(localStorage.getItem(KEY) || "{}");
+
+function render() {
+  const c = document.getElementById("cards");
+  c.innerHTML = "";
+  STOPS.forEach(s => {
+    const isDone = !!done[s.id];
+    const card = document.createElement("div");
+    card.className = "card" + (isDone ? " done" : "") + (s.hero ? " hero" : "");
+    const walk = s.num === "WALK";
+    card.innerHTML = `
+      ${s.hero ? '<div class="hero-flag">BIGGEST PRIZE</div>' : ''}
+      <div class="card-top">
+        <div class="emoji">${s.emoji}</div>
+        <div class="card-head">
+          <div class="stop-name">${s.name}</div>
+          <div class="gallery">${s.gallery}</div>
+        </div>
+      </div>
+      <div class="numbox${walk ? ' walk' : ''}">
+        <div class="label">${walk ? 'No number —' : 'Type into the app'}</div>
+        <div class="num">${walk ? 'just walk<br>and find it!' : s.num}</div>
+      </div>
+      <div class="mission"><span class="tag">🔎 YOUR MISSION</span>${s.mission}</div>
+      <button class="found-btn" onclick="toggle(${s.id}, this)">${isDone ? '⭐ Found it! Tap to undo' : 'I FOUND IT! ⭐'}</button>
+    `;
+    c.appendChild(card);
+  });
+  updateProgress();
+}
+
+function toggle(id, btn) {
+  if (done[id]) { delete done[id]; }
+  else { done[id] = true; burst(btn); }
+  localStorage.setItem(KEY, JSON.stringify(done));
+  render();
+  if (Object.keys(done).length === TOTAL) {
+    setTimeout(() => document.getElementById("win").classList.add("show"), 350);
+  }
+}
+
+function updateProgress() {
+  const n = Object.keys(done).length;
+  document.getElementById("count").textContent = n + " / " + TOTAL;
+  document.getElementById("barfill").style.width = (n / TOTAL * 100) + "%";
+  let s = "";
+  for (let i = 0; i < TOTAL; i++) s += i < n ? "⭐" : "☆";
+  document.getElementById("stars").textContent = s;
+}
+
+function burst(btn) {
+  const emojis = ["⭐","🎉","✨","🏅","🎈","💛"];
+  const rect = btn ? btn.getBoundingClientRect() : { left: innerWidth/2, top: innerHeight/2, width:0 };
+  for (let i = 0; i < 18; i++) {
+    const e = document.createElement("div");
+    e.className = "confetti";
+    e.textContent = emojis[i % emojis.length];
+    e.style.left = (rect.left + Math.random() * rect.width) + "px";
+    e.style.top = (rect.top - 10) + "px";
+    const dur = 1.2 + Math.random() * 1.1;
+    e.style.animation = `fall ${dur}s ease-in forwards`;
+    e.style.setProperty("transform", `translateX(${(Math.random()-.5)*120}px)`);
+    document.body.appendChild(e);
+    setTimeout(() => e.remove(), dur * 1000 + 100);
+  }
+}
+
+function resetAll() {
+  if (!confirm("Start the treasure hunt over from the beginning?")) return;
+  done = {}; localStorage.removeItem(KEY);
+  document.getElementById("win").classList.remove("show");
+  render(); window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+render();
+</script>
+</body>
+</html>
