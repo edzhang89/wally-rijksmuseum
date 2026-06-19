@@ -6,82 +6,88 @@
 <meta name="theme-color" content="#1d3b6e">
 <title>Wally's Rijksmuseum Treasure Hunt</title>
 <style>
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   :root { --gold:#f4b942; --gold-deep:#d99411; --navy:#1d3b6e; --navy-deep:#142a52; --cream:#fff7e6; --green:#46b06a; }
   html, body { margin:0; padding:0; }
   body {
     font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;
     background:radial-gradient(circle at 50% 0%, #3461b5 0%, var(--navy) 42%, var(--navy-deep) 100%);
-    background-attachment:fixed; color:#fff; min-height:100vh; padding:0 14px 70px; overflow-x:hidden;
+    background-attachment:fixed; color:#fff; min-height:100vh; padding:0 14px 80px; overflow-x:hidden;
   }
-
   header { text-align:center; padding:20px 6px 6px; }
-  .badge-spy { font-size:50px; line-height:1; filter:drop-shadow(0 4px 6px rgba(0,0,0,.4)); animation:bob 2.5s ease-in-out infinite; display:inline-block; }
-  @keyframes bob { 0%,100%{transform:translateY(0) rotate(-4deg);} 50%{transform:translateY(-8px) rotate(4deg);} }
-  h1 { font-size:28px; margin:6px 0 2px; letter-spacing:.5px; color:var(--gold); text-shadow:0 3px 0 var(--gold-deep), 0 6px 10px rgba(0,0,0,.4); }
+  .badge-spy { font-size:54px; line-height:1; filter:drop-shadow(0 4px 6px rgba(0,0,0,.4)); animation:bob 2.5s ease-in-out infinite; display:inline-block; }
+  @keyframes bob { 0%,100%{transform:translateY(0) rotate(-5deg);} 50%{transform:translateY(-9px) rotate(5deg);} }
+  h1 { font-size:29px; margin:6px 0 2px; letter-spacing:.5px; color:var(--gold); text-shadow:0 3px 0 var(--gold-deep),0 6px 10px rgba(0,0,0,.4); }
   .subtitle { font-size:14px; opacity:.9; margin:0 0 14px; font-weight:bold; }
 
-  .progress-wrap { background:rgba(0,0,0,.28); border-radius:22px; padding:13px 16px; max-width:540px; margin:0 auto; border:3px solid rgba(244,185,66,.5); }
+  .progress-wrap { background:rgba(0,0,0,.28); border-radius:22px; padding:13px 16px; max-width:560px; margin:0 auto; border:3px solid rgba(244,185,66,.5); position:sticky; top:8px; z-index:8; backdrop-filter:blur(4px); }
   .progress-label { font-size:15px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; }
-  #count { background:var(--gold); color:var(--navy); padding:3px 12px; border-radius:14px; font-size:16px; }
-  .stars { font-size:21px; letter-spacing:2px; margin-top:8px; line-height:1.3; }
-  .bar { height:16px; background:rgba(255,255,255,.18); border-radius:10px; margin-top:8px; overflow:hidden; }
+  #count { background:var(--gold); color:var(--navy); padding:4px 14px; border-radius:14px; font-size:17px; }
+  .stars { font-size:18px; letter-spacing:1px; margin-top:8px; line-height:1.3; word-break:break-all; }
+  .bar { height:18px; background:rgba(255,255,255,.18); border-radius:10px; margin-top:8px; overflow:hidden; }
   .bar-fill { height:100%; width:0%; background:linear-gradient(90deg,#ff7eb3,#ffd86b,#7ee8a0,#6bd0ff); background-size:300% 100%; border-radius:10px; transition:width .55s cubic-bezier(.3,1.4,.5,1); animation:shine 3s linear infinite; }
   @keyframes shine { to { background-position:300% 0; } }
 
-  .cards { max-width:540px; margin:18px auto 0; display:flex; flex-direction:column; gap:18px; }
-  .card { background:var(--cream); color:#2a2a2a; border-radius:26px; padding:0 0 16px; overflow:hidden;
-    box-shadow:0 8px 0 rgba(0,0,0,.22), 0 16px 26px rgba(0,0,0,.38); border:5px solid #fff; position:relative; transition:transform .15s; }
+  .cards { max-width:560px; margin:18px auto 0; display:flex; flex-direction:column; gap:20px; }
+  .card { background:var(--cream); color:#2a2a2a; border-radius:28px; padding:0 0 18px; overflow:hidden;
+    box-shadow:0 9px 0 rgba(0,0,0,.22),0 18px 28px rgba(0,0,0,.38); border:6px solid #fff; position:relative; }
   .card.done { border-color:var(--gold); }
-  .card.done::after { content:"✓"; position:absolute; top:10px; right:10px; background:var(--green); color:#fff;
-    width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    font-size:28px; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,.4); border:3px solid #fff; z-index:3; animation:pop .4s ease; }
+  .card.wiggle { animation:wiggle .6s ease; }
+  @keyframes wiggle { 0%,100%{transform:rotate(0) scale(1);} 20%{transform:rotate(-3deg) scale(1.04);} 50%{transform:rotate(3deg) scale(1.06);} 80%{transform:rotate(-1.5deg) scale(1.02);} }
+  .card.done::after { content:"✓"; position:absolute; top:12px; right:12px; background:var(--green); color:#fff;
+    width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:30px; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,.4); border:3px solid #fff; z-index:3; animation:pop .4s ease; }
+  .stopnum { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.55); color:#fff; font-size:13px; font-weight:bold; padding:5px 12px; border-radius:20px; z-index:3; }
 
-  .art { position:relative; height:180px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; }
-  .art-emoji { font-size:92px; filter:drop-shadow(0 4px 6px rgba(0,0,0,.3)); transition:transform .2s; }
-  .art:active .art-emoji { transform:scale(1.25) rotate(8deg); }
+  .art { position:relative; height:190px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; }
+  .art-emoji { font-size:96px; filter:drop-shadow(0 4px 6px rgba(0,0,0,.3)); animation:floaty 3.5s ease-in-out infinite; }
+  @keyframes floaty { 0%,100%{transform:translateY(0) rotate(-2deg);} 50%{transform:translateY(-7px) rotate(2deg);} }
+  .art:active .art-emoji { transform:scale(1.3) rotate(10deg); }
   .art-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .art-tap { position:absolute; bottom:8px; right:10px; background:rgba(0,0,0,.55); color:#fff; font-size:11px;
-    font-weight:bold; padding:4px 10px; border-radius:20px; z-index:2; letter-spacing:.5px; }
-  .hero-flag { position:absolute; top:10px; left:10px; background:var(--gold); color:var(--navy); font-size:12px;
-    font-weight:bold; padding:5px 13px; border-radius:20px; letter-spacing:1px; box-shadow:0 3px 7px rgba(0,0,0,.4); z-index:3; }
+  .art-tap { position:absolute; bottom:8px; right:10px; background:rgba(0,0,0,.55); color:#fff; font-size:12px; font-weight:bold; padding:5px 12px; border-radius:20px; z-index:2; letter-spacing:.5px; }
+  .hero-flag { position:absolute; bottom:8px; left:10px; background:var(--gold); color:var(--navy); font-size:12px; font-weight:bold; padding:5px 13px; border-radius:20px; box-shadow:0 3px 7px rgba(0,0,0,.4); z-index:3; }
 
-  .body { padding:0 16px; }
-  .stop-name { font-size:21px; font-weight:bold; line-height:1.15; color:var(--navy); margin-top:13px; }
+  .body { padding:0 17px; }
+  .stop-name { font-size:22px; font-weight:bold; line-height:1.15; color:var(--navy); margin-top:13px; }
   .gallery { font-size:12px; color:#8a7333; font-weight:bold; margin-top:3px; text-transform:uppercase; letter-spacing:.5px; }
-
-  .numbox { margin:13px 0 12px; display:flex; align-items:center; gap:12px; background:var(--navy); color:#fff; border-radius:18px; padding:11px 16px; }
+  .numbox { margin:13px 0 12px; display:flex; align-items:center; gap:12px; background:var(--navy); color:#fff; border-radius:18px; padding:12px 16px; }
   .numbox .label { font-size:12px; opacity:.85; line-height:1.2; }
-  .numbox .num { font-size:42px; font-weight:bold; color:var(--gold); letter-spacing:1px; margin-left:auto; text-shadow:0 2px 0 var(--gold-deep); }
+  .numbox .num { font-size:44px; font-weight:bold; color:var(--gold); letter-spacing:1px; margin-left:auto; text-shadow:0 2px 0 var(--gold-deep); }
   .numbox.walk { background:#7a5fa8; }
   .numbox.walk .num { font-size:17px; color:#ffe08a; line-height:1.1; text-align:right; }
-
-  .mission { background:#fff; border:3px dashed var(--gold-deep); border-radius:16px; padding:11px 14px; font-size:16px; line-height:1.35; font-weight:bold; color:#3a3a3a; }
+  .mission { background:#fff; border:3px dashed var(--gold-deep); border-radius:16px; padding:12px 15px; font-size:16px; line-height:1.38; font-weight:bold; color:#3a3a3a; }
   .mission .tag { color:var(--gold-deep); display:block; font-size:12px; letter-spacing:1px; margin-bottom:3px; }
 
-  .btn-row { display:flex; gap:10px; margin-top:13px; }
-  .found-btn { flex:1; border:none; border-radius:18px; padding:16px; font-size:18px; font-weight:bold; font-family:inherit;
-    cursor:pointer; background:var(--green); color:#fff; box-shadow:0 6px 0 #2f8a4d; transition:all .1s; }
-  .found-btn:active { transform:translateY(5px); box-shadow:0 1px 0 #2f8a4d; }
-  .card.done .found-btn { background:var(--gold); color:var(--navy); box-shadow:0 6px 0 var(--gold-deep); }
-  .fun-btn { width:64px; border:none; border-radius:18px; font-size:26px; cursor:pointer; background:#ff6fa5; color:#fff; box-shadow:0 6px 0 #d44e83; transition:all .1s; }
-  .fun-btn:active { transform:translateY(5px); box-shadow:0 1px 0 #d44e83; }
+  /* BIG buttons */
+  .found-btn { width:100%; margin-top:15px; border:none; border-radius:24px; padding:26px 16px; font-size:27px; font-weight:bold;
+    font-family:inherit; cursor:pointer; background:var(--green); color:#fff; box-shadow:0 9px 0 #2f8a4d; transition:all .1s; min-height:84px; line-height:1.1; }
+  .found-btn:active { transform:translateY(8px); box-shadow:0 1px 0 #2f8a4d; }
+  .card.done .found-btn { background:var(--gold); color:var(--navy); box-shadow:0 9px 0 var(--gold-deep); }
+  .fun-btn { width:100%; margin-top:11px; border:none; border-radius:24px; padding:20px; font-size:23px; font-weight:bold;
+    font-family:inherit; cursor:pointer; background:#ff6fa5; color:#fff; box-shadow:0 8px 0 #d44e83; transition:all .1s; min-height:70px; }
+  .fun-btn:active { transform:translateY(7px); box-shadow:0 1px 0 #d44e83; }
 
-  .win { position:fixed; inset:0; background:rgba(20,42,82,.97); z-index:50; display:none; flex-direction:column;
-    align-items:center; justify-content:center; text-align:center; padding:30px; }
+  .win { position:fixed; inset:0; background:rgba(20,42,82,.97); z-index:50; display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px; }
   .win.show { display:flex; animation:pop .4s ease; }
-  .win h2 { font-size:36px; color:var(--gold); margin:10px 0; text-shadow:0 3px 0 var(--gold-deep); }
+  .win h2 { font-size:38px; color:var(--gold); margin:10px 0; text-shadow:0 3px 0 var(--gold-deep); }
   .win p { font-size:20px; line-height:1.4; max-width:360px; }
-  .win .big { font-size:88px; margin-bottom:6px; animation:bob 2s ease-in-out infinite; }
-  .win button { margin-top:22px; background:var(--gold); color:var(--navy); border:none; border-radius:18px; padding:16px 32px; font-size:18px; font-weight:bold; font-family:inherit; box-shadow:0 6px 0 var(--gold-deep); }
+  .win .big { font-size:92px; margin-bottom:6px; animation:bob 2s ease-in-out infinite; }
+  .win button { margin-top:22px; background:var(--gold); color:var(--navy); border:none; border-radius:20px; padding:18px 36px; font-size:19px; font-weight:bold; font-family:inherit; box-shadow:0 7px 0 var(--gold-deep); }
   @keyframes pop { 0%{transform:scale(.6);opacity:0;} 100%{transform:scale(1);opacity:1;} }
 
-  footer { text-align:center; max-width:540px; margin:26px auto 0; font-size:13px; opacity:.75; line-height:1.5; }
-  .reset { background:none; border:1px solid rgba(255,255,255,.4); color:#fff; border-radius:12px; padding:9px 18px; font-size:13px; font-family:inherit; margin-top:12px; cursor:pointer; }
+  footer { text-align:center; max-width:560px; margin:26px auto 0; font-size:13px; opacity:.75; line-height:1.5; }
+  .reset { background:none; border:1px solid rgba(255,255,255,.4); color:#fff; border-radius:12px; padding:10px 20px; font-size:13px; font-family:inherit; margin-top:12px; cursor:pointer; }
 
-  .fx { position:fixed; z-index:60; pointer-events:none; will-change:transform; font-size:24px; }
-  @keyframes spark { to { transform:translate(var(--dx), var(--dy)) scale(.4); opacity:0; } }
-  @keyframes floatup { to { transform:translateY(-115vh) translateX(var(--sway)); opacity:0; } }
+  .fx { position:fixed; z-index:60; pointer-events:none; will-change:transform; }
+  @keyframes spark { 0%{transform:translate(0,0) scale(1.2);opacity:1;} 100%{transform:translate(var(--dx),var(--dy)) scale(.3) rotate(var(--r));opacity:0;} }
+  @keyframes floatup { to { transform:translateY(-120vh) translateX(var(--sway)) rotate(var(--r)); opacity:0; } }
+  @keyframes conffall { to { transform:translateY(120vh) translateX(var(--sway)) rotate(var(--spin)); opacity:.2; } }
+  .point-pop { position:fixed; left:50%; top:42%; transform:translateX(-50%); z-index:70; font-size:58px; font-weight:bold;
+    color:var(--gold); text-shadow:0 4px 0 var(--gold-deep),0 6px 14px rgba(0,0,0,.5); pointer-events:none; animation:risepop 2s ease-out forwards; white-space:nowrap; }
+  @keyframes risepop { 0%{transform:translateX(-50%) translateY(0) scale(.3);opacity:0;} 25%{transform:translateX(-50%) translateY(-10px) scale(1.2);opacity:1;} 100%{transform:translateX(-50%) translateY(-150px) scale(1);opacity:0;} }
+  .flash { position:fixed; inset:0; background:#fff; z-index:55; pointer-events:none; opacity:0; }
+  .flash.go { animation:flashfade .5s ease-out; }
+  @keyframes flashfade { 0%{opacity:.55;} 100%{opacity:0;} }
 </style>
 </head>
 <body>
@@ -91,7 +97,7 @@
   <h1>Wally's Treasure Hunt</h1>
   <p class="subtitle">🎨 Secret Agent Mission · Rijksmuseum</p>
   <div class="progress-wrap">
-    <div class="progress-label"><span>🏆 Agent Points</span><span id="count">0 / 11</span></div>
+    <div class="progress-label"><span>🏆 Agent Points</span><span id="count">0 / 21</span></div>
     <div class="bar"><div class="bar-fill" id="barfill"></div></div>
     <div class="stars" id="stars"></div>
   </div>
@@ -100,55 +106,62 @@
 <div class="cards" id="cards"></div>
 
 <footer>
-  At each painting: type the big number into the official Rijksmuseum app 🎧, find the secret thing,
-  then smash <b>I FOUND IT!</b> 🎆 Tap the picture for balloons! 🎈<br>
+  At each stop: type the big number into the official Rijksmuseum app 🎧, find the secret thing,
+  then SMASH the green button 🎆 Tap the picture for balloons! 🎈<br>
   <button class="reset" onclick="resetAll()">↻ Start over</button>
 </footer>
 
 <div class="win" id="win">
   <div class="big">🥞🎉</div>
   <h2>MISSION COMPLETE!</h2>
-  <p>Super job, Agent Wally! You found every treasure in the whole museum. Time for poffertjes!</p>
+  <p>WOW Agent Wally — you found all 21 treasures in the whole museum! You're a museum CHAMPION. Time for poffertjes!</p>
   <button onclick="hideWin()">Yay! ⭐</button>
 </div>
+<div class="flash" id="flash"></div>
 
 <script>
+const FP = n => "https://commons.wikimedia.org/wiki/Special:FilePath/" + n + "?width=540";
 const STOPS = [
-  { id:1,  emoji:"🏛️", grad:"#3461b5,#7aa0e0", name:"The Great Hall",       gallery:"Entrance hall",       num:"949", mission:"Look WAY up! Is this a castle or a church? Count the big arches." },
-  { id:2,  emoji:"🧀", grad:"#f0932b,#ffd56b", name:"The Cheese Painting",   gallery:"Gallery of Honour",   num:"589", mission:"FIND THE CHEESE! How many cheeses on the table? Which food would you eat first?" },
-  { id:3,  emoji:"🥛", grad:"#16a596,#7fe0d4", name:"The Milkmaid",          gallery:"Gallery of Honour",   num:"575", img:"Johannes%20Vermeer%20-%20Het%20melkmeisje%20-%20Google%20Art%20Project.jpg", mission:"Find the little foot-warmer box on the floor. Is the milk moving or frozen?" },
-  { id:4,  emoji:"🌬️", grad:"#3ba7e0,#8fe09a", name:"The Windmill",          gallery:"Gallery of Honour",   num:"519", mission:"A windmill — like the real one we saw! Find the dark rain clouds in the sky." },
-  { id:5,  emoji:"🦢", grad:"#2bb6d6,#bff0ff", name:"The Angry Swan",        gallery:"Gallery of Honour",   num:"549", img:"Jan%20Asselijn%20-%20The%20Threatened%20Swan.jpg", mission:"A giant white swan with wings WAY open. Make the angry hiss! Ssssss!" },
-  { id:6,  emoji:"🌟", grad:"#b5862b,#f4d06b", name:"The Night Watch",       gallery:"Night Watch Gallery", num:"500", img:"The%20Nightwatch%20by%20Rembrandt%20-%20Rijksmuseum.jpg", hero:true, mission:"The most famous painting in Holland! Find: the little GIRL IN GOLD, the DOG, and the DRUMMER." },
-  { id:7,  emoji:"⛵", grad:"#1d3b6e,#5f9fd6", name:"The Giant Ship",        gallery:"Gallery 2.15",        num:"515", mission:"A HUGE wooden warship! Count the tall masts. How many sails could it have?" },
-  { id:8,  emoji:"🏠", grad:"#d6519e,#ffa6d6", name:"The Tiny Doll's House", gallery:"17th-century rooms",  num:"WALK", mission:"The tiniest house in the world! Find the little kitchen and the teeny tiny plates." },
-  { id:9,  emoji:"🧑‍🎨", grad:"#e0682b,#3bbac4", name:"Van Gogh's Face",      gallery:"Gallery 1.18",        num:"325", img:"Vincent%20van%20Gogh%20-%20Self-Portrait%20-%20Google%20Art%20Project%20(454045).jpg", mission:"A man with an ORANGE beard who painted his OWN face! Count the colors in his cheeks." },
-  { id:10, emoji:"🕺", grad:"#c0398a,#f4c04b", name:"The Dancing God",       gallery:"Asian Pavilion",      num:"819", imgfull:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Shiva_as_the_Lord_of_Dance_LACMA_edit.jpg/440px-Shiva_as_the_Lord_of_Dance_LACMA_edit.jpg", mission:"A golden god dancing in a ring of fire! COUNT HIS ARMS (four!). What's under his foot?" },
-  { id:11, emoji:"👹", grad:"#c0392b,#5a1a14", name:"The Temple Guards",     gallery:"Asian Pavilion",      num:"873", mission:"Two giant scary warrior statues guarding a door. Make YOUR scariest guard face!" },
+  { emoji:"🏛️", grad:"#3461b5,#7aa0e0", name:"The Great Hall",         gallery:"Entrance hall",       num:"949", mission:"Look WAY up! Is this a castle or a church? Count the big stone arches." },
+  { emoji:"🧀", grad:"#f0932b,#ffd56b", name:"The Cheese Painting",     gallery:"Gallery of Honour",   num:"589", mission:"FIND THE CHEESE! How many cheeses are on the table? Which food would YOU eat first?" },
+  { emoji:"🎵", grad:"#9b59b6,#e0a6ff", name:"The Singing Man",         gallery:"Gallery of Honour",   num:"551", mission:"Find the man playing a little guitar (a lute). Make his happy singing face! La la la!" },
+  { emoji:"🥛", grad:"#16a596,#7fe0d4", name:"The Milkmaid",            gallery:"Gallery of Honour",   num:"575", img:FP("Johannes%20Vermeer%20-%20Het%20melkmeisje%20-%20Google%20Art%20Project.jpg"), mission:"Find the little foot-warmer box on the floor. Is the milk moving or frozen?" },
+  { emoji:"🌬️", grad:"#3ba7e0,#8fe09a", name:"The Windmill",            gallery:"Gallery of Honour",   num:"519", mission:"A windmill, like the real one we saw! Find the dark grey rain clouds." },
+  { emoji:"🦢", grad:"#2bb6d6,#bff0ff", name:"The Angry Swan",          gallery:"Gallery of Honour",   num:"549", img:FP("Jan%20Asselijn%20-%20The%20Threatened%20Swan.jpg"), mission:"A giant white swan with wings WAY open! Make the angry hiss — Ssssss!" },
+  { emoji:"💍", grad:"#c0392b,#ff9e7a", name:"The Loving Couple",       gallery:"Gallery of Honour",   num:"559", mission:"A man with his hand on a lady's heart. Find her sparkly golden sleeves." },
+  { emoji:"🚩", grad:"#8a6d3b,#e0c07a", name:"The Flag Soldier",        gallery:"Gallery of Honour",   num:"553", img:FP("The%20Standard%20Bearer%20(Rembrandt).jpg"), mission:"A soldier holding a big flag! Find the feather in his hat, then strike his cool pose!" },
+  { emoji:"🌟", grad:"#b5862b,#f4d06b", name:"The Night Watch",         gallery:"Night Watch Gallery", num:"500", img:FP("The%20Nightwatch%20by%20Rembrandt%20-%20Rijksmuseum.jpg"), hero:true, mission:"The most famous painting in Holland! Find the little GIRL IN GOLD, the DOG, and the DRUMMER." },
+  { emoji:"⛵", grad:"#1d3b6e,#5f9fd6", name:"The Giant Ship",          gallery:"Gallery 2.15",        num:"515", mission:"A HUGE wooden warship! Count the tall masts. How many sails could it have?" },
+  { emoji:"📚", grad:"#7a5230,#d6a86b", name:"The Magic Library",       gallery:"The Library",         num:"958", mission:"Shhh — whisper time! 🤫 The most beautiful bookshelves ever, with a spiral staircase. Find the very top." },
+  { emoji:"🥁", grad:"#34495e,#8fa6bd", name:"The Soldiers' Party",     gallery:"Gallery 2.18",        num:"566", mission:"A big party of soldiers with a giant flag! Find the drum and the gold drinking cup." },
+  { emoji:"🏺", grad:"#2980b9,#a6d8ff", name:"The Flower Towers",       gallery:"Gallery 2.22",        num:"546", mission:"Tall blue-and-white towers — but they're for FLOWERS! Count the little flower spouts." },
+  { emoji:"🧑‍🎨", grad:"#e0682b,#3bbac4", name:"Van Gogh's Face",        gallery:"Gallery 1.18",        num:"325", img:FP("Vincent%20van%20Gogh%20-%20Self-Portrait%20-%20Google%20Art%20Project%20(454045).jpg"), mission:"A man with an ORANGE beard who painted his OWN face! Count the colors in his cheeks." },
+  { emoji:"🌾", grad:"#8ac44b,#e8f0a6", name:"The Sunny Field",         gallery:"Gallery 1.18",        num:"373", mission:"Another windmill in a big green field! Find the cows and the huge open sky." },
+  { emoji:"👑", grad:"#b8860b,#ffd86b", name:"The Royal Officials",     gallery:"Gallery 1.17",        num:"345", mission:"Fancy men in golden royal clothes! Find the one wearing a special wavy sword (a kris)." },
+  { emoji:"🤗", grad:"#16a085,#9be0cf", name:"The Big Hug Statues",     gallery:"Gallery 0.1",         num:"150", mission:"Two old stone people giving a big hug! Now go give someone a hug too. 🤗" },
+  { emoji:"👶", grad:"#c0398a,#ffb3da", name:"The Family Painting",     gallery:"Gallery 0.1",         num:"190", mission:"A church FULL of families and babies! Count how many babies you can spot." },
+  { emoji:"🐒", grad:"#7f8c4b,#cfe0a6", name:"The Faraway Land",        gallery:"Gallery 0.4",         num:"177", mission:"A wild rocky land with people and animals. Can you find the little monkey? 🐒" },
+  { emoji:"🕺", grad:"#c0398a,#f4c04b", name:"The Dancing God",         gallery:"Asian Pavilion",      num:"819", imgfull:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Shiva_as_the_Lord_of_Dance_LACMA_edit.jpg/460px-Shiva_as_the_Lord_of_Dance_LACMA_edit.jpg", mission:"A golden god dancing in a ring of fire! COUNT HIS ARMS (four!). What's under his foot?" },
+  { emoji:"👹", grad:"#c0392b,#5a1a14", name:"The Temple Guards",       gallery:"Asian Pavilion",      num:"873", mission:"Two GIANT scary warrior statues guarding a door. Make your very scariest guard face! 👹" },
 ];
-const TOTAL = STOPS.length, KEY = "wally-rijks-v2";
+const TOTAL = STOPS.length, KEY = "wally-rijks-v3";
 let done = JSON.parse(localStorage.getItem(KEY) || "{}");
 
 function buzz(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
-
-function imgSrc(s){
-  if (s.imgfull) return s.imgfull;
-  if (s.img) return "https://commons.wikimedia.org/wiki/Special:FilePath/" + s.img + "?width=520";
-  return null;
-}
+function srcOf(s){ return s.imgfull || s.img || null; }
 
 function render() {
   const c = document.getElementById("cards"); c.innerHTML = "";
-  STOPS.forEach(s => {
-    const isDone = !!done[s.id], walk = s.num === "WALK", src = imgSrc(s);
+  STOPS.forEach((s, i) => {
+    const id = i + 1, isDone = !!done[id], walk = s.num === "WALK", src = srcOf(s);
     const card = document.createElement("div");
-    card.className = "card" + (isDone ? " done" : "");
+    card.className = "card" + (isDone ? " done" : ""); card.id = "card" + id;
     card.innerHTML = `
       <div class="art" style="background:linear-gradient(150deg,${s.grad})" onclick="balloons(event)">
-        ${s.hero ? '<div class="hero-flag">⭐ BIGGEST PRIZE</div>' : ''}
+        <div class="stopnum">Stop ${id} / ${TOTAL}</div>
         <span class="art-emoji">${s.emoji}</span>
         ${src ? `<img class="art-img" src="${src}" alt="" onerror="this.remove()">` : ''}
-        <div class="art-tap">👆 tap me!</div>
+        ${s.hero ? '<div class="hero-flag">⭐ BIGGEST PRIZE</div>' : '<div class="art-tap">👆 tap me!</div>'}
       </div>
       <div class="body">
         <div class="stop-name">${s.name}</div>
@@ -158,10 +171,8 @@ function render() {
           <div class="num">${walk ? 'just walk<br>&amp; find it!' : s.num}</div>
         </div>
         <div class="mission"><span class="tag">🔎 YOUR MISSION</span>${s.mission}</div>
-        <div class="btn-row">
-          <button class="found-btn" onclick="toggle(${s.id},event)">${isDone ? '⭐ Found it!' : 'I FOUND IT! 🎆'}</button>
-          <button class="fun-btn" onclick="balloons(event)" title="balloons">🎈</button>
-        </div>
+        <button class="found-btn" onclick="toggle(${id},event)">${isDone ? '⭐ FOUND IT!' : 'I FOUND IT! 🎆'}</button>
+        <button class="fun-btn" onclick="balloons(event)">🎈 BALLOONS! 🎈</button>
       </div>`;
     c.appendChild(card);
   });
@@ -170,10 +181,18 @@ function render() {
 
 function toggle(id, ev) {
   if (done[id]) { delete done[id]; buzz(20); }
-  else { done[id] = true; buzz([0,40,30,60]); fireworks(ev); }
+  else { done[id] = true; celebrate(ev, id); }
   localStorage.setItem(KEY, JSON.stringify(done));
-  render();
-  if (Object.keys(done).length === TOTAL) setTimeout(showWin, 400);
+  const n = Object.keys(done).length;
+  // update just progress without full re-render mid-animation, then refresh card label
+  updateProgress();
+  const card = document.getElementById("card" + id);
+  if (card) {
+    card.classList.toggle("done", !!done[id]);
+    const b = card.querySelector(".found-btn");
+    if (b) b.textContent = done[id] ? "⭐ FOUND IT!" : "I FOUND IT! 🎆";
+  }
+  if (n === TOTAL) setTimeout(showWin, 700);
 }
 
 function updateProgress() {
@@ -188,35 +207,66 @@ function spawn(x, y, txt, anim, dur, vars) {
   const e = document.createElement("div");
   e.className = "fx"; e.textContent = txt;
   e.style.left = x + "px"; e.style.top = y + "px";
-  for (const k in vars) e.style.setProperty(k, vars[k]);
+  e.style.fontSize = (vars && vars["--fs"]) || "26px";
+  for (const k in vars) if (k !== "--fs") e.style.setProperty(k, vars[k]);
   e.style.animation = anim + " " + dur + "s ease-out forwards";
   document.body.appendChild(e);
-  setTimeout(() => e.remove(), dur * 1000 + 120);
+  setTimeout(() => e.remove(), dur * 1000 + 150);
 }
 
-function fireworks(ev) {
-  const x = ev ? ev.clientX : innerWidth/2, y = ev ? ev.clientY : innerHeight/2;
-  const bits = ["🎆","✨","⭐","🎉","💥","🌟","💛","🧨"];
-  for (let i=0;i<26;i++) {
-    const ang = (Math.PI*2*i)/26 + Math.random()*0.3, dist = 90 + Math.random()*150;
-    spawn(x, y, bits[i % bits.length], "spark", 0.9 + Math.random()*0.7,
-      { "--dx": Math.cos(ang)*dist + "px", "--dy": Math.sin(ang)*dist + "px" });
+function fireworks(cx, cy) {
+  const bits = ["🎆","✨","⭐","🎉","💥","🌟","💛","🧨","💫","🎊"];
+  for (let i=0;i<40;i++) {
+    const ang = (Math.PI*2*i)/40 + Math.random()*0.25, dist = 110 + Math.random()*200;
+    spawn(cx, cy, bits[i % bits.length], "spark", 1.4 + Math.random()*1.1,
+      { "--dx": Math.cos(ang)*dist + "px", "--dy": Math.sin(ang)*dist + "px",
+        "--r": (Math.random()*720-360)+"deg", "--fs": (24+Math.random()*22)+"px" });
   }
 }
 
 function balloons(ev) {
   if (ev) ev.stopPropagation();
-  buzz(30);
-  const set = ["🎈","🎈","🎈","🎉","🌈","💫","🩷","💙","💚"];
-  for (let i=0;i<14;i++) {
+  buzz(35);
+  const set = ["🎈","🎈","🎈","🎉","🌈","💫","🩷","💙","💚","💜","🧡"];
+  for (let i=0;i<24;i++) {
     const x = Math.random()*innerWidth;
-    spawn(x, innerHeight + 20, set[i % set.length], "floatup", 2.2 + Math.random()*1.6,
-      { "--sway": (Math.random()-.5)*120 + "px", "font-size": (26 + Math.random()*22) + "px" });
+    spawn(x, innerHeight + 25, set[i % set.length], "floatup", 3.6 + Math.random()*2.2,
+      { "--sway": (Math.random()-.5)*150 + "px", "--r": (Math.random()*60-30)+"deg",
+        "--fs": (28+Math.random()*26)+"px" });
   }
 }
 
-function showWin(){ document.getElementById("win").classList.add("show"); buzz([0,60,40,60,40,80]); bigShow(); }
-function bigShow(){ for(let k=0;k<5;k++) setTimeout(()=>fireworks({clientX:Math.random()*innerWidth, clientY:Math.random()*innerHeight*0.6}), k*350); }
+function confettiRain(dur) {
+  const cols = ["🟥","🟨","🟦","🟩","🟪","🧡","⭐","✨","🎊","🎉","💛","💗"];
+  const end = Date.now() + dur;
+  const iv = setInterval(() => {
+    for (let i=0;i<5;i++) {
+      const x = Math.random()*innerWidth;
+      spawn(x, -30, cols[Math.floor(Math.random()*cols.length)], "conffall", 2.4 + Math.random()*1.8,
+        { "--sway": (Math.random()-.5)*220 + "px", "--spin": (Math.random()*900)+"deg", "--fs": (20+Math.random()*20)+"px" });
+    }
+    if (Date.now() >= end) clearInterval(iv);
+  }, 70);
+}
+
+function flash() { const f = document.getElementById("flash"); f.classList.remove("go"); void f.offsetWidth; f.classList.add("go"); }
+function pointBanner() { const e = document.createElement("div"); e.className = "point-pop"; e.textContent = "+1 ⭐"; document.body.appendChild(e); setTimeout(()=>e.remove(), 2000); }
+
+function celebrate(ev, id) {
+  buzz([0,50,40,70,40,90]);
+  flash(); pointBanner();
+  const x = ev ? ev.clientX : innerWidth/2, y = ev ? ev.clientY : innerHeight*0.5;
+  fireworks(x, y);
+  setTimeout(()=>fireworks(innerWidth*0.25, innerHeight*0.35), 350);
+  setTimeout(()=>fireworks(innerWidth*0.75, innerHeight*0.4), 650);
+  setTimeout(()=>fireworks(innerWidth*0.5, innerHeight*0.3), 1000);
+  balloons();
+  confettiRain(3400);
+  const card = document.getElementById("card" + id);
+  if (card) { card.classList.remove("wiggle"); void card.offsetWidth; card.classList.add("wiggle"); }
+}
+
+function showWin(){ document.getElementById("win").classList.add("show"); buzz([0,70,50,70,50,90]); let k=0; const iv=setInterval(()=>{ fireworks(Math.random()*innerWidth, Math.random()*innerHeight*0.6); if(++k>7) clearInterval(iv); }, 380); confettiRain(4000); }
 function hideWin(){ document.getElementById("win").classList.remove("show"); }
 
 function resetAll() {
